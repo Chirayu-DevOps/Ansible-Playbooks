@@ -1,0 +1,33 @@
+- name: Deploy a Node.JS app
+  hosts: server1
+  become: yes # Run tasks as root (sudo)
+
+  tasks:
+  - name: Ensure Node.js and npm is installed
+    yum:
+      name: 
+        - nodejs 
+        - npm
+        - git 
+      state: present
+
+  - name: Clone Node.JS app from Github
+    git:
+      repo: "https://github.com/sonam-niit/nodedockerapp.git"
+      dest: /opt/my-node-app
+  
+  - name: Install Dependencies
+    npm: 
+      path: /opt/my-node-app
+      production: yes
+
+  - name: Start app
+    shell: "nohup node /opt/my-node-app/index.js &"
+    args:
+      chdir: /opt/my-node-app
+
+# sudo firewall-cmd --permanent --add-port=3000/tcp
+# sudo firewall-cmd --reload
+
+# sudo firewall-cmd --list-ports
+# manage internal security
